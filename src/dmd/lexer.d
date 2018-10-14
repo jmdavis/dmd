@@ -504,6 +504,7 @@ class Lexer : ErrorHandler
                         __gshared char[11 + 1] date;
                         __gshared char[8 + 1] time;
                         __gshared char[24 + 1] timestamp;
+                        version (FreeBSD) __gshared int freeBSDVersion;
                         if (!initdone) // lazy evaluation
                         {
                             initdone = true;
@@ -514,6 +515,11 @@ class Lexer : ErrorHandler
                             sprintf(&date[0], "%.6s %.4s", p + 4, p + 20);
                             sprintf(&time[0], "%.8s", p + 11);
                             sprintf(&timestamp[0], "%.24s", p);
+                            version (FreeBSD)
+                            {
+                                import core.sys.freebsd.unistd : getosreldate;
+                                freeBSDVersion = getosreldate();
+                            }
                         }
                         if (id == Id.DATE)
                         {
@@ -549,6 +555,11 @@ class Lexer : ErrorHandler
                             // Advance scanner to end of file
                             while (!(*p == 0 || *p == 0x1A))
                                 p++;
+                        }
+                        else version (FreeBSD) if (id == Id.freeBSDVersion)
+                        {
+                            t.value = TOK.int32Literal;
+                            t.unsvalue = freeBSDVersion;
                         }
                     }
                     //printf("t.value = %d\n",t.value);

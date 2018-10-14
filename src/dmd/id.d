@@ -425,6 +425,8 @@ immutable Msgtable[] msgtable =
     { "FALSE" },
     { "unsigned" },
     { "wchar_t" },
+
+    { "freeBSDVersion", "__FreeBSD_version" }
 ];
 
 
