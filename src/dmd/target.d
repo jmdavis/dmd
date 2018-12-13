@@ -707,7 +707,14 @@ struct Target
     }
 
     // this guarantees `getTargetInfo` and `allTargetInfos` remain in sync
-    private enum TargetInfoKeys
+    version (FreeBSD) private enum TargetInfoKeys
+    {
+        cppRuntimeLibrary,
+        floatAbi,
+        objectFormat,
+        freeBSDVersion
+    }
+    else private enum TargetInfoKeys
     {
         cppRuntimeLibrary,
         floatAbi,
@@ -748,6 +755,9 @@ struct Target
                     return stringExp("snn");
                 }
                 return stringExp("");
+            version (FreeBSD) case freebsdInfo.stringof:
+            {
+            }
             default:
                 return null;
         }
